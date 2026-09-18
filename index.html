@@ -2,651 +2,822 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Functional Rehab Lab | Premium Physiotherapy</title>
-    
-    <!-- Libraries -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <style>
         :root {
             --m-black: #090909;
             --d-black: #050505;
             --f-orange: #FF5A00;
-            --border: #1f1f1f;
-            --gray-text: #a3a3a3;
+            --b-orange: #FF6A00;
+            --gray: #A3A3A3;
+            --border: #242424;
         }
 
-        * { font-family: 'Inter', sans-serif; -webkit-font-smoothing: antialiased; }
-        
-        body { background-color: var(--m-black); color: white; overflow-x: hidden; }
+        body {
+            font-family: 'Plus+Jakarta+Sans', sans-serif;
+            background-color: var(--m-black);
+            color: #FFFFFF;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* Minimal Scrollbar */
-        ::-webkit-scrollbar { width: 4px; }
+        .orange-glow { box-shadow: 0 0 20px rgba(255, 90, 0, 0.15); }
+        .glass { background: rgba(15, 15, 15, 0.8); backdrop-filter: blur(12px); border: 1px solid var(--border); }
+        .bg-matte { background-color: var(--m-black); }
+        .text-orange { color: var(--f-orange); }
+        .bg-orange { background-color: var(--f-orange); }
+        
+        input, select, textarea {
+            background: #151515 !important;
+            border: 1px solid var(--border) !important;
+            color: white !important;
+            border-radius: 12px !important;
+        }
+
+        input:focus { border-color: var(--f-orange) !important; outline: none; }
+
+        .btn-primary {
+            background-color: var(--f-orange);
+            color: white;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover {
+            background-color: var(--b-orange);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(255, 90, 0, 0.2);
+        }
+
+        .sidebar-item.active {
+            background: linear-gradient(90deg, rgba(255, 90, 0, 0.1) 0%, transparent 100%);
+            border-left: 4px solid var(--f-orange);
+            color: white;
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
 
-        /* Glassmorphism & UI Components */
-        .glass-card { background: #0f0f0f; border: 1px solid var(--border); border-radius: 20px; }
-        .btn-orange { background: var(--f-orange); transition: all 0.2s ease; }
-        .btn-orange:hover { filter: brightness(1.1); transform: translateY(-1px); }
-        .input-dark { background: #151515; border: 1px solid var(--border); border-radius: 12px; color: white; padding: 12px 16px; width: 100%; transition: border-color 0.2s; }
-        .input-dark:focus { border-color: var(--f-orange); outline: none; }
-        
-        .sidebar-link.active { color: var(--f-orange); background: rgba(255, 90, 0, 0.05); border-right: 2px solid var(--f-orange); }
-
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade { animation: fadeIn 0.4s ease forwards; }
-
-        /* Loader */
-        #loader { background: var(--m-black); z-index: 9999; }
-        
-        @media print { .no-print { display: none !important; } .print-only { display: block !important; color: black !important; } }
+        @media print {
+            .no-print { display: none !important; }
+            .print-only { display: block !important; color: black !important; }
+            body { background: white; color: black; }
+        }
     </style>
 </head>
 <body>
 
-    <!-- GLOBAL LOADING STATE -->
-    <div id="loader" class="fixed inset-0 flex flex-col items-center justify-center">
-        <div class="w-12 h-12 border-2 border-white/10 border-t-[#FF5A00] rounded-full animate-spin mb-4"></div>
-        <p class="text-[10px] tracking-[0.4em] uppercase text-gray-500 font-bold">Functional Rehab Lab</p>
-    </div>
-
-    <!-- AUTHENTICATION VIEW -->
-    <div id="view-auth" class="hidden min-h-screen flex items-center justify-center p-6 bg-[url('https://www.transparenttextures.com/patterns/black-linen.png')]">
-        <div class="w-full max-w-md">
-            <div class="text-center mb-10">
-                <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-20 h-20 mx-auto rounded-3xl mb-6 shadow-2xl" alt="Logo">
-                <h1 class="text-2xl font-extrabold tracking-tight">FUNCTIONAL <span class="text-[#FF5A00]">REHAB LAB</span></h1>
-                <p class="text-gray-500 text-sm mt-2">Premium performance & physiotherapy</p>
+    <!-- AUTHENTICATION SCREEN -->
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-[#1a100a] via-black to-black">
+        <div class="w-full max-w-[1000px] grid md:grid-cols-2 glass rounded-[32px] overflow-hidden shadow-2xl">
+            <!-- Brand Panel -->
+            <div class="hidden md:flex flex-col justify-between p-12 bg-gradient-to-br from-[#0a0a0a] to-black border-r border-[#242424]">
+                <div>
+                    <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-20 h-20 rounded-2xl mb-8" alt="Logo">
+                    <h1 class="text-4xl font-extrabold leading-tight tracking-tighter">FUNCTIONAL<br><span class="text-orange">REHAB LAB</span></h1>
+                    <p class="text-gray-400 mt-6 max-w-xs text-lg">Elite physiotherapy and performance recovery center.</p>
+                </div>
+                <div class="flex items-center gap-4 text-gray-500">
+                    <div class="w-12 h-[1px] bg-gray-800"></div>
+                    <span class="text-xs uppercase tracking-[0.3em]">Premium Care</span>
+                </div>
             </div>
 
-            <div class="glass-card p-8 shadow-2xl border-white/5">
-                <div id="auth-title-box" class="mb-8">
-                    <h2 class="text-xl font-bold" id="auth-header">Welcome Back</h2>
-                    <p class="text-gray-500 text-sm mt-1" id="auth-subheader">Access your recovery dashboard</p>
+            <!-- Form Panel -->
+            <div class="p-8 md:p-16 flex flex-col justify-center">
+                <div id="login-view">
+                    <h2 class="text-3xl font-bold mb-2">Portal Access</h2>
+                    <p class="text-gray-500 mb-10">Enter your credentials to continue</p>
+                    <form id="login-form" class="space-y-6">
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Username</label>
+                            <input type="text" id="login-username" required class="w-full px-5 py-4 focus:ring-1 ring-[#FF5A00]/50" placeholder="Username">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase tracking-widest text-gray-500 mb-2">Password</label>
+                            <input type="password" id="login-password" required class="w-full px-5 py-4 focus:ring-1 ring-[#FF5A00]/50" placeholder="••••••••">
+                        </div>
+                        <button type="submit" class="w-full btn-primary py-4 rounded-xl text-lg">Sign In</button>
+                    </form>
+                    <p class="mt-8 text-center text-gray-500">
+                        New patient? <a href="javascript:void(0)" onclick="toggleAuth(false)" class="text-orange font-bold">Register Profile</a>
+                    </p>
                 </div>
 
-                <form id="auth-form" class="space-y-5">
-                    <div id="name-field" class="hidden">
-                        <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Full Name</label>
-                        <input type="text" id="auth-name" class="input-dark" placeholder="John Doe">
-                    </div>
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Username</label>
-                        <input type="text" id="auth-username" required class="input-dark" placeholder="Enter username">
-                    </div>
-                    <div>
-                        <label class="text-[10px] uppercase tracking-widest text-gray-500 font-bold mb-2 block">Password</label>
-                        <input type="password" id="auth-password" required class="input-dark" placeholder="••••••••">
-                    </div>
-                    <button type="submit" class="w-full btn-orange py-4 rounded-xl font-bold text-sm uppercase tracking-widest mt-2">Continue</button>
-                </form>
-
-                <div class="mt-8 pt-6 border-t border-white/5 text-center">
-                    <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-gray-500 text-xs hover:text-[#FF5A00] transition-colors">
-                        New patient? <span class="text-[#FF5A00] font-bold">Create Account</span>
-                    </button>
+                <div id="signup-view" class="hidden">
+                    <h2 class="text-3xl font-bold mb-2">Create Profile</h2>
+                    <p class="text-gray-500 mb-8">Register for digital recovery tracking</p>
+                    <form id="signup-form" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" id="reg-fullname" placeholder="Full Name" required class="w-full px-4 py-3">
+                            <input type="text" id="reg-username" placeholder="Username" required class="w-full px-4 py-3">
+                        </div>
+                        <input type="tel" id="reg-phone" placeholder="Phone Number" required class="w-full px-4 py-3">
+                        <input type="password" id="reg-password" placeholder="Password" required class="w-full px-4 py-3">
+                        <button type="submit" class="w-full btn-primary py-4 rounded-xl">Create Account</button>
+                    </form>
+                    <p class="mt-8 text-center text-gray-500">
+                        Already have access? <a href="javascript:void(0)" onclick="toggleAuth(true)" class="text-orange font-bold">Sign In</a>
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN APP VIEW -->
-    <div id="view-app" class="hidden min-h-screen flex flex-col md:flex-row">
+    <!-- MAIN APPLICATION UI -->
+    <div id="main-app" class="hidden min-h-screen flex flex-col md:flex-row overflow-hidden">
         
-        <!-- Desktop Sidebar -->
-        <aside class="hidden md:flex w-72 flex-col bg-[#050505] border-r border-white/5">
+        <!-- Sidebar Navigation -->
+        <aside class="hidden md:flex w-72 flex-col bg-black border-r border-[#242424]">
             <div class="p-8">
                 <div class="flex items-center gap-3 mb-12">
-                    <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-10 h-10 rounded-xl">
-                    <span class="text-sm font-black tracking-tighter uppercase">Rehab <span class="text-[#FF5A00]">Lab</span></span>
+                    <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-10 h-10 rounded-lg">
+                    <span class="font-black text-sm tracking-tighter uppercase">Rehab <span class="text-orange">Lab</span></span>
                 </div>
-                <nav id="nav-desktop" class="space-y-1"></nav>
+                <nav class="space-y-2" id="sidebar-nav">
+                    <!-- Nav items injected by JS -->
+                </nav>
             </div>
-            <div class="mt-auto p-8">
-                <button onclick="handleLogout()" class="flex items-center gap-4 text-gray-500 hover:text-white font-bold text-sm transition-colors">
-                    <i data-lucide="log-out" class="w-5 h-5"></i> Logout
+            <div class="mt-auto p-8 border-t border-[#242424]">
+                <button onclick="logout()" class="flex items-center gap-4 text-gray-500 hover:text-white transition-colors">
+                    <i data-lucide="log-out" class="w-5 h-5"></i>
+                    <span class="font-bold">Logout</span>
                 </button>
             </div>
         </aside>
 
-        <!-- Main Content Area -->
-        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[#090909]">
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-screen overflow-hidden bg-[#050505]">
             <!-- Header -->
-            <header class="h-20 border-b border-white/5 px-6 md:px-10 flex items-center justify-between bg-[#090909]/80 backdrop-blur-xl z-20">
-                <div class="md:hidden flex items-center gap-3">
-                    <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-8 h-8 rounded-lg">
+            <header class="h-20 border-b border-[#242424] px-6 md:px-10 flex items-center justify-between bg-black/50 backdrop-blur-md z-10">
+                <div class="flex items-center gap-4 md:hidden">
+                    <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-8 h-8 rounded">
                 </div>
-                <h2 id="current-view-title" class="text-lg font-bold">Dashboard</h2>
-                <div class="flex items-center gap-4">
-                    <div class="flex items-center gap-3 bg-[#111] border border-white/5 py-1.5 px-4 rounded-full">
-                        <div id="avatar-circle" class="w-7 h-7 rounded-full bg-[#FF5A00] flex items-center justify-center text-[10px] font-black"></div>
-                        <span id="header-user-name" class="text-sm font-medium hidden sm:block"></span>
+                <h2 id="view-title" class="text-xl font-bold">Dashboard</h2>
+                <div class="flex items-center gap-6">
+                    <div class="relative hidden sm:block">
+                        <i data-lucide="bell" class="w-6 h-6 text-gray-500 cursor-pointer hover:text-orange transition-colors"></i>
+                        <span class="absolute -top-1 -right-1 w-2 h-2 bg-orange rounded-full"></span>
                     </div>
+                    <div class="flex items-center gap-3 bg-[#151515] py-2 px-4 rounded-full border border-[#242424]">
+                        <span id="user-initials" class="w-8 h-8 rounded-full bg-orange flex items-center justify-center text-xs font-black text-white"></span>
+                        <span id="user-name" class="text-sm font-bold hidden md:block"></span>
+                    </div>
+                    <button onclick="logout()" class="md:hidden text-gray-500"><i data-lucide="log-out" class="w-6 h-6"></i></button>
                 </div>
             </header>
 
-            <!-- Scrollable Page Container -->
-            <div id="page-content" class="flex-1 overflow-y-auto p-6 md:p-10 pb-32"></div>
+            <!-- Scrollable Body -->
+            <div id="content-area" class="flex-1 overflow-y-auto p-6 md:p-10 pb-24">
+                <!-- Views are dynamically injected here -->
+            </div>
 
-            <!-- Mobile Navigation -->
-            <nav id="nav-mobile" class="md:hidden fixed bottom-0 left-0 right-0 h-20 bg-[#050505]/95 backdrop-blur-lg border-t border-white/5 flex items-center justify-around px-6 z-50"></nav>
+            <!-- Mobile Bottom Nav -->
+            <nav id="mobile-nav" class="md:hidden fixed bottom-0 left-0 right-0 h-16 glass border-t border-[#242424] flex items-center justify-around z-50">
+                <!-- Mobile icons injected by JS -->
+            </nav>
         </main>
     </div>
 
     <!-- MODAL SYSTEM -->
-    <div id="modal-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-md z-[100] hidden items-center justify-center p-4">
-        <div class="w-full max-w-2xl bg-[#0f0f0f] border border-white/5 rounded-[32px] overflow-hidden max-h-[90vh] flex flex-col relative shadow-2xl">
-            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white z-10"><i data-lucide="x"></i></button>
-            <div id="modal-body" class="overflow-y-auto p-8 md:p-12"></div>
+    <div id="modal-overlay" class="fixed inset-0 bg-black/90 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
+        <div id="modal-content" class="w-full max-w-2xl bg-[#0a0a0a] border border-[#242424] rounded-[24px] max-h-[90vh] overflow-y-auto p-8 relative shadow-2xl">
+            <button onclick="closeModal()" class="absolute top-6 right-6 text-gray-500 hover:text-white"><i data-lucide="x"></i></button>
+            <div id="modal-body"></div>
         </div>
     </div>
 
     <!-- TOAST NOTIFICATIONS -->
-    <div id="toast-wrap" class="fixed top-6 left-1/2 -translate-x-1/2 z-[200] flex flex-col items-center pointer-events-none"></div>
+    <div id="toast-container" class="fixed bottom-20 md:bottom-10 right-6 z-[200]"></div>
 
-    <!-- FIREBASE & LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { getFirestore, doc, setDoc, getDoc, collection, query, where, onSnapshot, addDoc, orderBy, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // --- FIREBASE CONFIGURATION ---
-        // Replace with your actual credentials for production
-        const firebaseConfig = {
-            apiKey: "FIREBASE_API_KEY",
-            authDomain: "rehab-lab.firebaseapp.com",
-            projectId: "rehab-lab",
-            storageBucket: "rehab-lab.appspot.com",
-            messagingSenderId: "SENDER_ID",
-            appId: "APP_ID"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        // --- STATE ---
-        let state = {
-            user: null,
-            role: null,
-            view: 'dashboard',
-            isLogin: true,
-            appointments: [],
-            prescriptions: [],
-            patients: []
-        };
-
-        const ADMINS = {
-            "Dr_AnandGR": "dranand@123",
-            "Cloudfare": "cloudfare@123"
-        };
-        const CLINIC_WHATSAPP = "918088596486";
-        const internalDomain = "@rehablab.io"; // Used to map usernames to Firebase Auth
-
-        // --- INITIALIZATION ---
-        onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                const userData = userDoc.data();
-                state.user = { ...user, ...userData };
-                state.role = userData?.role || 'patient';
-                
-                document.getElementById('header-user-name').innerText = state.user.name || state.user.displayName;
-                document.getElementById('avatar-circle').innerText = (state.user.name || 'U')[0].toUpperCase();
-                
-                initRealtimeData();
-                showView('app');
-                navigate('dashboard');
-            } else {
-                showView('auth');
-            }
-            hideLoader();
-        });
-
-        // --- AUTH LOGIC ---
-        const handleAuth = async (e) => {
-            e.preventDefault();
-            const username = document.getElementById('auth-username').value;
-            const pass = document.getElementById('auth-password').value;
-            const email = username + internalDomain;
+    <script>
+        // --- DATA STATE (Local Persistence Simulation) ---
+        const DB = {
+            get: (key) => JSON.parse(localStorage.getItem(`rehab_lab_${key}`)) || [],
+            set: (key, val) => localStorage.setItem(`rehab_lab_${key}`, JSON.stringify(val)),
             
-            setBtnLoading(true);
-
-            try {
-                if (state.isLogin) {
-                    // Check local admin mapping first for predefined creds
-                    if (ADMINS[username] && ADMINS[username] === pass) {
-                        await signInWithEmailAndPassword(auth, email, pass);
-                    } else {
-                        await signInWithEmailAndPassword(auth, email, pass);
-                    }
-                } else {
-                    const name = document.getElementById('auth-name').value;
-                    const res = await createUserWithEmailAndPassword(auth, email, pass);
-                    await setDoc(doc(db, "users", res.user.uid), {
-                        uid: res.user.uid,
-                        username: username,
-                        name: name,
-                        role: 'patient',
-                        createdAt: new Date().toISOString()
-                    });
-                }
-            } catch (err) {
-                showToast(err.message.replace("Firebase: ", ""), "error");
-            } finally {
-                setBtnLoading(false);
-            }
-        };
-
-        window.toggleAuthMode = () => {
-            state.isLogin = !state.isLogin;
-            document.getElementById('auth-header').innerText = state.isLogin ? 'Welcome Back' : 'Create Account';
-            document.getElementById('auth-subheader').innerText = state.isLogin ? 'Access your recovery dashboard' : 'Join the Functional Rehab Lab';
-            document.getElementById('name-field').classList.toggle('hidden', state.isLogin);
-            document.getElementById('auth-toggle-btn').innerHTML = state.isLogin ? 
-                'New patient? <span class="text-[#FF5A00] font-bold">Create Account</span>' : 
-                'Already have an account? <span class="text-[#FF5A00] font-bold">Login</span>';
-        };
-
-        window.handleLogout = () => {
-            signOut(auth).then(() => location.reload());
-        };
-
-        // --- NAVIGATION ---
-        const navSchema = {
-            patient: [
-                { id: 'dashboard', label: 'Home', icon: 'home' },
-                { id: 'book', label: 'Book', icon: 'plus-circle' },
-                { id: 'sessions', label: 'Sessions', icon: 'calendar' },
-                { id: 'prescriptions', label: 'Medical', icon: 'file-text' }
-            ],
-            admin: [
-                { id: 'dashboard', label: 'Overview', icon: 'layout-grid' },
-                { id: 'manage-appts', label: 'Bookings', icon: 'calendar' },
-                { id: 'patients', label: 'Patients', icon: 'users' },
-                { id: 'manage-presc', label: 'Scripts', icon: 'clipboard' }
+            admins: [
+                { username: 'Dr_AnandGR', password: 'dranand@123', name: 'Dr. Anand G.R.', role: 'admin' },
+                { username: 'Cloudfare', password: 'cloudfare@123', name: 'Admin Cloudfare', role: 'admin' }
             ]
         };
 
-        window.navigate = (viewId) => {
-            state.view = viewId;
-            const items = navSchema[state.role];
-            const current = items.find(i => i.id === viewId);
-            document.getElementById('current-view-title').innerText = current.label;
-            
-            // Sidebar Active UI
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            const activeLink = document.querySelector(`[data-nav="${viewId}"]`);
-            if (activeLink) activeLink.classList.add('active');
+        let currentUser = null;
+        const CLINIC_WHATSAPP = "918088596486";
 
-            renderPage();
-        };
+        // --- CORE ENGINE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initAuth();
+            lucide.createIcons();
+        });
 
-        // --- REALTIME DATA ---
-        function initRealtimeData() {
-            // Appointments
-            const qAppts = state.role === 'admin' ? 
-                query(collection(db, "appointments"), orderBy("createdAt", "desc")) :
-                query(collection(db, "appointments"), where("patientId", "==", state.user.uid), orderBy("createdAt", "desc"));
-            
-            onSnapshot(qAppts, (snap) => {
-                state.appointments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                if (['dashboard', 'manage-appts', 'sessions'].includes(state.view)) renderPage();
-            });
-
-            // Prescriptions
-            const qPresc = state.role === 'admin' ?
-                query(collection(db, "prescriptions"), orderBy("createdAt", "desc")) :
-                query(collection(db, "prescriptions"), where("patientId", "==", state.user.uid), orderBy("createdAt", "desc"));
-            
-            onSnapshot(qPresc, (snap) => {
-                state.prescriptions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-                if (['dashboard', 'prescriptions', 'manage-presc'].includes(state.view)) renderPage();
-            });
-
-            // Admin only: Patients list
-            if (state.role === 'admin') {
-                onSnapshot(collection(db, "users"), (snap) => {
-                    state.patients = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(u => u.role === 'patient');
-                });
+        function initAuth() {
+            const saved = localStorage.getItem('rehab_lab_session');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                showApp();
             }
         }
 
-        // --- PAGE RENDERING ---
-        function renderPage() {
-            const container = document.getElementById('page-content');
-            container.innerHTML = `<div class="animate-fade">${getTemplate(state.view)}</div>`;
+        function toggleAuth(isLogin) {
+            document.getElementById('login-view').classList.toggle('hidden', !isLogin);
+            document.getElementById('signup-view').classList.toggle('hidden', isLogin);
+        }
+
+        document.getElementById('login-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const userVal = document.getElementById('login-username').value;
+            const passVal = document.getElementById('login-password').value;
+
+            // Check Admins
+            const admin = DB.admins.find(a => a.username === userVal && a.password === passVal);
+            if (admin) {
+                loginSuccess(admin);
+                return;
+            }
+
+            // Check Patients
+            const patients = DB.get('patients');
+            const patient = patients.find(p => p.username === userVal && p.password === passVal);
+            if (patient) {
+                loginSuccess({ ...patient, role: 'patient' });
+                return;
+            }
+
+            showToast("Invalid credentials", "error");
+        });
+
+        document.getElementById('signup-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newUser = {
+                id: 'P-' + Date.now(),
+                name: document.getElementById('reg-fullname').value,
+                username: document.getElementById('reg-username').value,
+                phone: document.getElementById('reg-phone').value,
+                password: document.getElementById('reg-password').value,
+                registeredAt: new Date().toISOString()
+            };
+
+            const patients = DB.get('patients');
+            if (patients.find(p => p.username === newUser.username)) {
+                return showToast("Username already taken", "error");
+            }
+
+            patients.push(newUser);
+            DB.set('patients', patients);
+            loginSuccess({ ...newUser, role: 'patient' });
+        });
+
+        function loginSuccess(user) {
+            currentUser = user;
+            localStorage.setItem('rehab_lab_session', JSON.stringify(user));
+            showApp();
+            showToast(`Welcome, ${user.name}`);
+        }
+
+        function logout() {
+            localStorage.removeItem('rehab_lab_session');
+            location.reload();
+        }
+
+        function showApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('user-name').innerText = currentUser.name;
+            document.getElementById('user-initials').innerText = currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
+            
+            renderNav();
+            navigate(currentUser.role === 'admin' ? 'admin_dashboard' : 'patient_dashboard');
+        }
+
+        // --- NAVIGATION SYSTEM ---
+        const navItems = {
+            patient: [
+                { id: 'patient_dashboard', label: 'Dashboard', icon: 'home' },
+                { id: 'patient_book', label: 'Book Therapy', icon: 'plus-circle' },
+                { id: 'patient_appts', label: 'My Sessions', icon: 'calendar' },
+                { id: 'patient_presc', label: 'Prescriptions', icon: 'clipboard' }
+            ],
+            admin: [
+                { id: 'admin_dashboard', label: 'Overview', icon: 'layout-dashboard' },
+                { id: 'admin_appts', label: 'Appointments', icon: 'calendar-days' },
+                { id: 'admin_patients', label: 'Patient List', icon: 'users' },
+                { id: 'admin_presc', label: 'Medical Plans', icon: 'file-text' }
+            ]
+        };
+
+        function renderNav() {
+            const side = document.getElementById('sidebar-nav');
+            const mobile = document.getElementById('mobile-nav');
+            const items = navItems[currentUser.role];
+
+            side.innerHTML = items.map(item => `
+                <button onclick="navigate('${item.id}')" id="nav-${item.id}" class="sidebar-item w-full flex items-center gap-4 px-6 py-4 rounded-xl text-gray-400 hover:text-white transition-all font-semibold">
+                    <i data-lucide="${item.icon}" class="w-5 h-5"></i>
+                    <span>${item.label}</span>
+                </button>
+            `).join('');
+
+            mobile.innerHTML = items.map(item => `
+                <button onclick="navigate('${item.id}')" id="mnav-${item.id}" class="flex flex-col items-center gap-1 text-gray-500">
+                    <i data-lucide="${item.icon}" class="w-6 h-6"></i>
+                </button>
+            `).join('');
+
             lucide.createIcons();
         }
 
-        function getTemplate(view) {
+        function navigate(viewId) {
+            // Update UI Active States
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('[id^="mnav-"]').forEach(el => el.classList.remove('text-orange'));
+            
+            const sideBtn = document.getElementById(`nav-${viewId}`);
+            if (sideBtn) sideBtn.classList.add('active');
+            
+            const mobBtn = document.getElementById(`mnav-${viewId}`);
+            if (mobBtn) mobBtn.classList.add('text-orange');
+
+            // Set Header
+            const currentItem = navItems[currentUser.role].find(i => i.id === viewId);
+            document.getElementById('view-title').innerText = currentItem.label;
+
+            renderView(viewId);
+        }
+
+        // --- VIEW RENDERING ---
+        function renderView(viewId) {
+            const container = document.getElementById('content-area');
+            
             const views = {
-                // PATIENT
-                'dashboard': () => {
-                    const upcoming = state.appointments.find(a => a.status !== 'completed' && a.status !== 'cancelled');
-                    const recentP = state.prescriptions[0];
+                // PATIENT VIEWS
+                patient_dashboard: () => {
+                    const appts = DB.get('appointments').filter(a => a.patientId === currentUser.id);
+                    const upcoming = appts.find(a => a.status === 'confirmed');
                     
                     return `
-                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                            <div class="lg:col-span-8 space-y-8">
-                                <section class="glass-card p-8 bg-gradient-to-br from-[#111] to-[#090909]">
-                                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">Upcoming Session</h3>
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div class="lg:col-span-2 space-y-8">
+                                <div class="glass p-8 rounded-[24px] bg-gradient-to-br from-[#151515] to-black">
+                                    <div class="flex justify-between items-start mb-6">
+                                        <h3 class="text-xl font-bold">Upcoming Session</h3>
+                                        <i data-lucide="clock" class="text-orange"></i>
+                                    </div>
                                     ${upcoming ? `
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-6">
-                                                <div class="w-16 h-16 rounded-2xl bg-[#FF5A00]/10 flex flex-col items-center justify-center text-[#FF5A00]">
-                                                    <span class="text-xl font-black">${new Date(upcoming.date).getDate()}</span>
-                                                    <span class="text-[9px] font-bold uppercase">${new Date(upcoming.date).toLocaleString('default', { month: 'short' })}</span>
-                                                </div>
-                                                <div>
-                                                    <p class="text-lg font-bold">${upcoming.service}</p>
-                                                    <p class="text-sm text-gray-500">${upcoming.time} • Functional Rehab Lab</p>
-                                                </div>
+                                        <div class="flex items-center gap-6">
+                                            <div class="bg-orange/10 p-4 rounded-2xl text-center min-w-[80px]">
+                                                <span class="block text-2xl font-black text-orange">${new Date(upcoming.date).getDate()}</span>
+                                                <span class="text-[10px] uppercase font-bold text-gray-500">${new Date(upcoming.date).toLocaleString('default', { month: 'short' })}</span>
                                             </div>
-                                            <span class="px-4 py-1 rounded-full border border-white/10 text-[10px] font-bold uppercase text-[#FF5A00] tracking-widest">${upcoming.status}</span>
+                                            <div>
+                                                <p class="text-lg font-bold">${upcoming.service}</p>
+                                                <p class="text-gray-400 text-sm">${upcoming.time} • Dr. Anand G.R.</p>
+                                            </div>
                                         </div>
-                                    ` : `
-                                        <div class="text-center py-10 border-2 border-dashed border-white/5 rounded-2xl">
-                                            <p class="text-gray-500 text-sm">No scheduled sessions</p>
-                                            <button onclick="navigate('book')" class="mt-4 text-[#FF5A00] text-xs font-bold uppercase tracking-widest">Book Now</button>
-                                        </div>
-                                    `}
-                                </section>
+                                    ` : `<p class="text-gray-500 italic">No confirmed appointments scheduled.</p>`}
+                                </div>
 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="glass-card p-6">
-                                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-4">Latest Prescription</h4>
-                                        ${recentP ? `
-                                            <p class="text-sm font-bold truncate">${recentP.diagnosis}</p>
-                                            <p class="text-[10px] text-gray-500 mt-1">Issued ${recentP.date}</p>
-                                            <button onclick="viewPrescription('${recentP.id}')" class="mt-4 text-[#FF5A00] text-xs font-bold uppercase">Open Medical Plan</button>
-                                        ` : `<p class="text-xs text-gray-500 italic">None available yet.</p>`}
-                                    </div>
-                                    <div class="glass-card p-6">
-                                        <h4 class="text-xs font-bold text-gray-500 uppercase mb-4">Center Status</h4>
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
-                                            <span class="text-sm font-bold">Open</span>
-                                            <span class="text-xs text-gray-500 ml-auto">09:00 - 20:00</span>
+                                    <div class="glass p-6 rounded-2xl">
+                                        <div class="flex items-center gap-4 mb-4">
+                                            <div class="w-10 h-10 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500">
+                                                <i data-lucide="activity" class="w-5 h-5"></i>
+                                            </div>
+                                            <h4 class="font-bold">Recovery Path</h4>
                                         </div>
+                                        <div class="w-full bg-[#222] h-2 rounded-full overflow-hidden">
+                                            <div class="bg-blue-500 h-full w-[65%]"></div>
+                                        </div>
+                                        <p class="text-xs text-gray-500 mt-3 font-medium">Stage 3: Advanced Mobility</p>
+                                    </div>
+                                    <div class="glass p-6 rounded-2xl">
+                                        <div class="flex items-center gap-4 mb-4">
+                                            <div class="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500">
+                                                <i data-lucide="check-circle" class="w-5 h-5"></i>
+                                            </div>
+                                            <h4 class="font-bold">Latest Plan</h4>
+                                        </div>
+                                        <p class="text-sm text-gray-400 mb-4">Functional Mobility & Spine Decompression</p>
+                                        <button onclick="navigate('patient_presc')" class="text-orange text-xs font-bold uppercase tracking-wider">Open Medical Plan</button>
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="lg:col-span-4 space-y-6">
-                                <div class="glass-card p-6 border-l-4 border-l-[#FF5A00]">
-                                    <h4 class="font-bold text-sm mb-2 italic">Tip of the Day</h4>
-                                    <p class="text-xs text-gray-400 leading-relaxed">"Dynamic stretching before activity activates motor patterns and reduces ligamentous strain."</p>
+                            
+                            <div class="glass p-8 rounded-[24px]">
+                                <h3 class="font-bold mb-6">Quick Actions</h3>
+                                <div class="space-y-4">
+                                    <button onclick="navigate('patient_book')" class="w-full py-4 bg-[#111] hover:bg-[#1a1a1a] border border-[#242424] rounded-xl flex items-center px-6 gap-4 transition-colors">
+                                        <i data-lucide="plus" class="w-5 h-5 text-orange"></i>
+                                        <span class="font-bold text-sm">Book New Session</span>
+                                    </button>
+                                    <a href="https://wa.me/${CLINIC_WHATSAPP}" target="_blank" class="w-full py-4 bg-[#111] hover:bg-[#1a1a1a] border border-[#242424] rounded-xl flex items-center px-6 gap-4 transition-colors">
+                                        <i data-lucide="message-circle" class="w-5 h-5 text-green-500"></i>
+                                        <span class="font-bold text-sm">Contact Clinic</span>
+                                    </a>
                                 </div>
-                                <button onclick="window.open('https://wa.me/${CLINIC_WHATSAPP}')" class="w-full bg-[#25D366] text-black font-black p-4 rounded-2xl text-xs uppercase tracking-[0.2em] flex items-center justify-center gap-2">
-                                    <i data-lucide="message-square" class="w-4 h-4"></i> Contact Lab
-                                </button>
                             </div>
                         </div>
                     `;
                 },
 
-                'book': () => `
-                    <div class="max-w-xl mx-auto glass-card p-8 md:p-12">
-                        <h3 class="text-2xl font-black mb-2">Book Session</h3>
-                        <p class="text-gray-500 text-sm mb-10">Select your preferred recovery time</p>
-                        <form onsubmit="handleBooking(event)" class="space-y-6">
-                            <div>
-                                <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2 block">Service Type</label>
-                                <select id="b-service" class="input-dark bg-[#151515]">
-                                    <option>Physiotherapy Consultation</option>
-                                    <option>Sports Injury Rehabilitation</option>
-                                    <option>Dry Needling & IASTM</option>
-                                    <option>Post-Op Rehab</option>
-                                </select>
+                patient_book: () => `
+                    <div class="max-w-3xl mx-auto">
+                        <div class="glass rounded-[32px] overflow-hidden">
+                            <div class="p-8 bg-gradient-to-r from-orange/20 to-transparent border-b border-[#242424]">
+                                <h3 class="text-2xl font-bold">Schedule Appointment</h3>
+                                <p class="text-gray-400">Choose a recovery session that fits your schedule</p>
                             </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2 block">Date</label>
-                                    <input type="date" id="b-date" required class="input-dark">
+                            <form id="booking-form" class="p-8 space-y-8" onsubmit="handleBooking(event)">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div class="space-y-4">
+                                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-500">Treatment Category</label>
+                                        <select id="book-service" class="w-full p-4 bg-[#0a0a0a]">
+                                            <option>Physiotherapy Consultation</option>
+                                            <option>Sports Injury Rehabilitation</option>
+                                            <option>Post-Op Functional Recovery</option>
+                                            <option>Performance Optimization</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-500">Select Specialist</label>
+                                        <select class="w-full p-4 bg-[#0a0a0a]">
+                                            <option>Dr. Anand G.R. (Clinical Lead)</option>
+                                        </select>
+                                    </div>
+                                    <div class="space-y-4">
+                                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-500">Date</label>
+                                        <input type="date" id="book-date" required class="w-full p-4">
+                                    </div>
+                                    <div class="space-y-4">
+                                        <label class="block text-xs font-bold uppercase tracking-widest text-gray-500">Time Slot</label>
+                                        <select id="book-time" class="w-full p-4 bg-[#0a0a0a]">
+                                            <option>09:00 AM</option><option>10:30 AM</option><option>12:00 PM</option>
+                                            <option>04:00 PM</option><option>05:30 PM</option><option>07:00 PM</option>
+                                        </select>
+                                    </div>
                                 </div>
-                                <div>
-                                    <label class="text-[10px] font-black uppercase text-gray-500 tracking-widest mb-2 block">Time</label>
-                                    <select id="b-time" class="input-dark bg-[#151515]">
-                                        <option>10:00 AM</option><option>11:30 AM</option>
-                                        <option>04:00 PM</option><option>05:30 PM</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <button type="submit" class="w-full btn-orange py-5 rounded-2xl font-black uppercase tracking-[0.2em] text-xs">Confirm & Pay</button>
-                        </form>
+                                <button type="submit" class="w-full btn-primary py-5 rounded-2xl text-lg uppercase tracking-widest font-black">Confirm & Generate Invoice</button>
+                            </form>
+                        </div>
                     </div>
                 `,
 
-                'sessions': () => `
-                    <div class="glass-card overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 text-[10px] uppercase font-black tracking-widest text-gray-500">
-                                <tr><th class="p-6">Date</th><th class="p-6">Service</th><th class="p-6">Status</th><th class="p-6">Action</th></tr>
-                            </thead>
-                            <tbody class="divide-y divide-white/5 text-sm">
-                                ${state.appointments.map(a => `
+                patient_appts: () => {
+                    const appts = DB.get('appointments').filter(a => a.patientId === currentUser.id);
+                    return `
+                        <div class="glass rounded-2xl overflow-hidden">
+                            <table class="w-full text-left">
+                                <thead class="bg-[#111] text-xs uppercase tracking-widest text-gray-500">
                                     <tr>
-                                        <td class="p-6 font-bold">${a.date}</td>
-                                        <td class="p-6 text-gray-400">${a.service}</td>
-                                        <td class="p-6"><span class="text-[#FF5A00] text-[10px] uppercase font-bold tracking-tighter">${a.status}</span></td>
-                                        <td class="p-6"><button onclick="viewInvoice('${a.id}')" class="text-xs font-bold underline">Invoice</button></td>
+                                        <th class="px-8 py-5">Date / Time</th>
+                                        <th class="px-8 py-5">Service</th>
+                                        <th class="px-8 py-5">Status</th>
+                                        <th class="px-8 py-5 text-right">Actions</th>
                                     </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `,
+                                </thead>
+                                <tbody class="divide-y divide-[#242424]">
+                                    ${appts.length ? appts.map(a => `
+                                        <tr>
+                                            <td class="px-8 py-6">
+                                                <p class="font-bold">${a.date}</p>
+                                                <p class="text-xs text-gray-500">${a.time}</p>
+                                            </td>
+                                            <td class="px-8 py-6 text-sm">${a.service}</td>
+                                            <td class="px-8 py-6">
+                                                <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase ${
+                                                    a.status === 'confirmed' ? 'bg-green-500/10 text-green-500' : 'bg-orange/10 text-orange'
+                                                }">${a.status}</span>
+                                            </td>
+                                            <td class="px-8 py-6 text-right">
+                                                <button onclick="viewInvoice('${a.id}')" class="text-xs font-bold text-orange">View Invoice</button>
+                                            </td>
+                                        </tr>
+                                    `).join('') : `<tr><td colspan="4" class="p-10 text-center text-gray-500 italic">No session history found.</td></tr>`}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                },
 
-                'prescriptions': () => `
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        ${state.prescriptions.map(p => `
-                            <div class="glass-card p-8">
-                                <div class="flex justify-between items-start mb-6">
-                                    <h4 class="text-xl font-bold">${p.diagnosis}</h4>
-                                    <i data-lucide="file-text" class="text-[#FF5A00] w-6 h-6"></i>
+                patient_presc: () => {
+                    const prescriptions = DB.get('prescriptions').filter(p => p.patientId === currentUser.id);
+                    return `
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            ${prescriptions.length ? prescriptions.map(p => `
+                                <div class="glass p-8 rounded-3xl relative overflow-hidden group">
+                                    <div class="absolute top-0 right-0 p-4 opacity-10">
+                                        <i data-lucide="file-text" class="w-20 h-20 text-orange"></i>
+                                    </div>
+                                    <div class="mb-6">
+                                        <p class="text-xs font-bold text-orange uppercase tracking-widest mb-1">Prescription Date: ${p.date}</p>
+                                        <h3 class="text-xl font-bold">${p.diagnosis}</h3>
+                                    </div>
+                                    <div class="space-y-4 mb-8">
+                                        <div>
+                                            <p class="text-[10px] uppercase font-bold text-gray-500 tracking-wider">Main Exercises</p>
+                                            <p class="text-sm">${p.exercises}</p>
+                                        </div>
+                                    </div>
+                                    <button onclick="viewPrescription('${p.id}')" class="w-full py-3 bg-white text-black font-bold rounded-xl text-sm">Download Clinical Report</button>
                                 </div>
-                                <p class="text-xs text-gray-500 mb-6">Issued by Dr. Anand G.R. on ${p.date}</p>
-                                <button onclick="viewPrescription('${p.id}')" class="w-full border border-[#FF5A00] text-[#FF5A00] py-3 rounded-xl font-bold text-xs uppercase">View Medical Plan</button>
-                            </div>
-                        `).join('')}
-                    </div>
-                `,
+                            `).join('') : `<div class="col-span-2 glass p-12 rounded-3xl text-center text-gray-500 italic">Your medical plans will appear here after your first consultation.</div>`}
+                        </div>
+                    `;
+                },
 
                 // ADMIN VIEWS
-                'manage-appts': () => `
-                    <div class="glass-card overflow-hidden">
-                        <table class="w-full text-left">
-                            <thead class="bg-white/5 text-[10px] uppercase font-black tracking-widest text-gray-500">
-                                <tr><th class="p-6">Patient</th><th class="p-6">Date/Time</th><th class="p-6">Status</th><th class="p-6">Update</th></tr>
-                            </thead>
-                            <tbody class="divide-y divide-white/5 text-sm">
-                                ${state.appointments.map(a => `
-                                    <tr>
-                                        <td class="p-6">
-                                            <p class="font-bold">${a.patientName}</p>
-                                            <p class="text-[10px] text-gray-500 uppercase">${a.service}</p>
-                                        </td>
-                                        <td class="p-6 text-gray-400">${a.date}<br>${a.time}</td>
-                                        <td class="p-6 uppercase text-[10px] font-bold text-[#FF5A00]">${a.status}</td>
-                                        <td class="p-6">
-                                            <select onchange="updateApptStatus('${a.id}', this.value)" class="bg-black border border-white/10 rounded px-2 py-1 text-xs">
-                                                <option ${a.status === 'pending' ? 'selected' : ''}>pending</option>
-                                                <option ${a.status === 'confirmed' ? 'selected' : ''}>confirmed</option>
-                                                <option ${a.status === 'completed' ? 'selected' : ''}>completed</option>
-                                                <option ${a.status === 'cancelled' ? 'selected' : ''}>cancelled</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                `,
+                admin_dashboard: () => {
+                    const pts = DB.get('patients');
+                    const appts = DB.get('appointments');
+                    const stats = [
+                        { label: 'Total Patients', val: pts.length, icon: 'users', color: 'blue' },
+                        { label: 'Today Session', val: appts.filter(a => a.date === new Date().toISOString().split('T')[0]).length, icon: 'activity', color: 'orange' },
+                        { label: 'Pending Bookings', val: appts.filter(a => a.status === 'pending').length, icon: 'clock', color: 'yellow' },
+                        { label: 'Revenue (Est.)', val: '₹' + (appts.length * 1200).toLocaleString(), icon: 'trending-up', color: 'green' }
+                    ];
 
-                'patients': () => `
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        ${state.patients.map(p => `
-                            <div class="glass-card p-6">
-                                <div class="flex items-center gap-4 mb-6">
-                                    <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center font-bold text-[#FF5A00]">${p.name[0]}</div>
-                                    <div><p class="font-bold">${p.name}</p><p class="text-xs text-gray-500">${p.username}</p></div>
+                    return `
+                        <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                            ${stats.map(s => `
+                                <div class="glass p-6 rounded-2xl relative overflow-hidden">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <p class="text-xs font-bold text-gray-500 uppercase tracking-widest">${s.label}</p>
+                                            <p class="text-3xl font-black mt-2">${s.val}</p>
+                                        </div>
+                                        <i data-lucide="${s.icon}" class="w-5 h-5 text-orange"></i>
+                                    </div>
                                 </div>
-                                <div class="space-y-3">
-                                    <button onclick="openPrescForm('${p.uid}', '${p.name}')" class="w-full bg-[#FF5A00]/10 text-[#FF5A00] py-2.5 rounded-xl font-bold text-[10px] uppercase tracking-widest">Issue Script</button>
+                            `).join('')}
+                        </div>
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div class="glass rounded-2xl p-8">
+                                <h3 class="text-lg font-bold mb-6">Recent Appointments</h3>
+                                <div class="space-y-4">
+                                    ${appts.slice(-5).reverse().map(a => `
+                                        <div class="flex items-center justify-between p-4 bg-[#0d0d0d] rounded-xl border border-[#242424]">
+                                            <div>
+                                                <p class="font-bold text-sm">${a.patientName}</p>
+                                                <p class="text-[10px] text-gray-500 uppercase tracking-wider">${a.service}</p>
+                                            </div>
+                                            <span class="text-xs font-bold ${a.status === 'confirmed' ? 'text-green-500' : 'text-orange'}">${a.status}</span>
+                                        </div>
+                                    `).join('')}
                                 </div>
                             </div>
-                        `).join('')}
-                    </div>
-                `
+                            <div class="glass rounded-2xl p-8">
+                                <h3 class="text-lg font-bold mb-6">Clinic Capacity</h3>
+                                <div class="h-48 flex items-center justify-center text-gray-700">
+                                    <p class="text-sm font-medium italic">Peak performance analytics loading...</p>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                },
+
+                admin_appts: () => {
+                    const appts = DB.get('appointments');
+                    return `
+                        <div class="glass rounded-2xl overflow-hidden">
+                            <table class="w-full text-left">
+                                <thead class="bg-[#111] text-xs uppercase tracking-widest text-gray-500">
+                                    <tr>
+                                        <th class="px-8 py-5">Patient</th>
+                                        <th class="px-8 py-5">Date/Time</th>
+                                        <th class="px-8 py-5">Service</th>
+                                        <th class="px-8 py-5">Status</th>
+                                        <th class="px-8 py-5 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#242424]">
+                                    ${appts.length ? appts.map(a => `
+                                        <tr class="hover:bg-white/[0.02] transition-colors">
+                                            <td class="px-8 py-6 font-bold text-sm">${a.patientName}</td>
+                                            <td class="px-8 py-6 text-xs text-gray-400">${a.date}<br>${a.time}</td>
+                                            <td class="px-8 py-6 text-xs text-gray-400">${a.service}</td>
+                                            <td class="px-8 py-6">
+                                                <select onchange="updateApptStatus('${a.id}', this.value)" class="bg-[#111] border border-[#333] text-[10px] font-bold p-2 rounded">
+                                                    <option ${a.status === 'pending' ? 'selected' : ''}>pending</option>
+                                                    <option ${a.status === 'confirmed' ? 'selected' : ''}>confirmed</option>
+                                                    <option ${a.status === 'completed' ? 'selected' : ''}>completed</option>
+                                                    <option ${a.status === 'cancelled' ? 'selected' : ''}>cancelled</option>
+                                                </select>
+                                            </td>
+                                            <td class="px-8 py-6 text-right">
+                                                <button onclick="viewInvoice('${a.id}')" class="p-2 text-gray-500 hover:text-orange"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                                            </td>
+                                        </tr>
+                                    `).join('') : `<tr><td colspan="5" class="p-20 text-center text-gray-500">No appointments recorded.</td></tr>`}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                },
+
+                admin_patients: () => {
+                    const pts = DB.get('patients');
+                    return `
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${pts.map(p => `
+                                <div class="glass p-8 rounded-3xl">
+                                    <div class="flex items-center gap-4 mb-6">
+                                        <div class="w-12 h-12 rounded-full bg-orange/10 flex items-center justify-center text-orange font-black">${p.name[0]}</div>
+                                        <div>
+                                            <h3 class="font-bold">${p.name}</h3>
+                                            <p class="text-xs text-gray-500">${p.phone}</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-3">
+                                        <button onclick="showPrescriptionForm('${p.id}', '${p.name}')" class="w-full py-3 bg-orange/10 text-orange font-bold text-xs uppercase tracking-widest rounded-xl hover:bg-orange hover:text-white transition-all">New Prescription</button>
+                                        <button onclick="viewPatientDetails('${p.id}')" class="w-full py-3 bg-[#111] text-gray-400 font-bold text-xs uppercase tracking-widest rounded-xl border border-[#242424]">View History</button>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                },
+
+                admin_presc: () => {
+                    const presc = DB.get('prescriptions');
+                    return `
+                         <div class="glass rounded-2xl overflow-hidden">
+                            <table class="w-full text-left">
+                                <thead class="bg-[#111] text-xs uppercase tracking-widest text-gray-500">
+                                    <tr>
+                                        <th class="px-8 py-5">Patient</th>
+                                        <th class="px-8 py-5">Diagnosis</th>
+                                        <th class="px-8 py-5">Date</th>
+                                        <th class="px-8 py-5 text-right">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-[#242424]">
+                                    ${presc.reverse().map(p => `
+                                        <tr>
+                                            <td class="px-8 py-6 font-bold text-sm">${p.patientName}</td>
+                                            <td class="px-8 py-6 text-sm text-gray-400">${p.diagnosis}</td>
+                                            <td class="px-8 py-6 text-sm text-gray-400">${p.date}</td>
+                                            <td class="px-8 py-6 text-right">
+                                                <button onclick="viewPrescription('${p.id}')" class="text-orange"><i data-lucide="external-link" class="w-5 h-5"></i></button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+                }
             };
-            return views[view] ? views[view]() : views['dashboard']();
-        }
 
-        // --- ACTIONS ---
-        window.handleBooking = async (e) => {
-            e.preventDefault();
-            const data = {
-                patientId: state.user.uid,
-                patientName: state.user.name,
-                service: document.getElementById('b-service').value,
-                date: document.getElementById('b-date').value,
-                time: document.getElementById('b-time').value,
-                status: 'pending',
-                amount: '₹1200',
-                invoiceId: 'INV-' + Math.floor(Math.random()*10000),
-                createdAt: new Date().toISOString()
-            };
-
-            await addDoc(collection(db, "appointments"), data);
-            showToast("Booking request sent!");
-            navigate('sessions');
-            viewInvoice(data.id, data);
-        };
-
-        window.openPrescForm = (uid, name) => {
-            const html = `
-                <h2 class="text-xl font-bold mb-8">Medical Plan: <span class="text-[#FF5A00]">${name}</span></h2>
-                <form id="presc-form" class="space-y-6">
-                    <div>
-                        <label class="text-[10px] font-bold uppercase text-gray-500 mb-2 block">Clinical Diagnosis</label>
-                        <input id="pr-diag" required class="input-dark">
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-bold uppercase text-gray-500 mb-2 block">Treatment Protocol / Exercises</label>
-                        <textarea id="pr-ex" rows="6" required class="input-dark"></textarea>
-                    </div>
-                    <button type="submit" class="w-full btn-orange py-4 rounded-xl font-bold text-xs uppercase tracking-widest">Issue & Sync</button>
-                </form>
-            `;
-            openModal(html);
-            document.getElementById('presc-form').onsubmit = async (e) => {
-                e.preventDefault();
-                await addDoc(collection(db, "prescriptions"), {
-                    patientId: uid,
-                    patientName: name,
-                    diagnosis: document.getElementById('pr-diag').value,
-                    exercises: document.getElementById('pr-ex').value,
-                    date: new Date().toLocaleDateString(),
-                    createdAt: new Date().toISOString()
-                });
-                closeModal();
-                showToast("Prescription issued!");
-            };
-        };
-
-        window.updateApptStatus = async (id, val) => {
-            await updateDoc(doc(db, "appointments", id), { status: val });
-            showToast(`Appointment ${val}`);
-        };
-
-        window.viewInvoice = (id, data = null) => {
-            const a = data || state.appointments.find(x => x.id === id);
-            const msg = `*FUNCTIONAL REHAB LAB INVOICE*%0A*Inv:* ${a.invoiceId}%0A*Date:* ${a.date}%0A*Total:* ${a.amount}%0A_Status: Confirmed_`;
-            
-            const html = `
-                <div class="print-area">
-                    <div class="flex justify-between items-start mb-12">
-                        <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-12 h-12 rounded-xl">
-                        <div class="text-right"><p class="text-2xl font-black text-[#FF5A00]">INVOICE</p><p class="text-xs text-gray-500">${a.invoiceId}</p></div>
-                    </div>
-                    <div class="grid grid-cols-2 gap-8 mb-10 pb-10 border-b border-white/5">
-                        <div><p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Patient</p><p class="font-bold">${a.patientName}</p></div>
-                        <div class="text-right"><p class="text-[10px] font-bold text-gray-500 uppercase mb-2">Service</p><p class="font-bold">${a.service}</p></div>
-                    </div>
-                    <div class="flex justify-between text-lg font-bold mb-12"><span>Total Amount</span><span class="text-[#FF5A00]">${a.amount}</span></div>
-                    <div class="flex gap-4 no-print">
-                        <button onclick="window.print()" class="flex-1 bg-white text-black py-4 rounded-xl font-bold text-xs uppercase tracking-widest">Print PDF</button>
-                        <a href="https://wa.me/${CLINIC_WHATSAPP}?text=${msg}" target="_blank" class="flex-1 bg-[#25D366] text-black py-4 rounded-xl font-bold text-xs uppercase tracking-widest text-center">WhatsApp</a>
-                    </div>
-                </div>
-            `;
-            openModal(html);
-        };
-
-        window.viewPrescription = (id) => {
-            const p = state.prescriptions.find(x => x.id === id);
-            const html = `
-                <div class="text-center mb-10">
-                    <h2 class="text-2xl font-black text-[#FF5A00]">MEDICAL PLAN</h2>
-                    <p class="text-[10px] text-gray-500 uppercase tracking-widest">${p.date}</p>
-                </div>
-                <div class="space-y-8">
-                    <div>
-                        <label class="text-[10px] font-black text-gray-500 uppercase mb-2 block">Diagnosis</label>
-                        <p class="text-lg font-bold text-white">${p.diagnosis}</p>
-                    </div>
-                    <div>
-                        <label class="text-[10px] font-black text-gray-500 uppercase mb-2 block">Instructions & Exercises</label>
-                        <div class="bg-white/5 p-6 rounded-2xl text-sm text-gray-300 leading-relaxed">${p.exercises.replace(/\n/g, '<br>')}</div>
-                    </div>
-                </div>
-                <div class="mt-12 pt-6 border-t border-white/5 flex justify-between items-center italic text-[10px] text-gray-600">
-                    <span>Clinical Lead: Dr. Anand G.R.</span>
-                    <span>Functional Rehab Lab</span>
-                </div>
-            `;
-            openModal(html);
-        };
-
-        // --- UI HELPERS ---
-        function renderNavigation() {
-            const items = navSchema[state.role];
-            const desktop = document.getElementById('nav-desktop');
-            const mobile = document.getElementById('nav-mobile');
-            
-            const html = items.map(i => `
-                <button onclick="navigate('${i.id}')" data-nav="${i.id}" class="sidebar-link w-full flex items-center gap-4 px-4 py-3 rounded-xl text-gray-500 hover:text-white transition-all font-bold text-sm">
-                    <i data-lucide="${i.icon}" class="w-5 h-5"></i>
-                    <span class="md:block hidden">${i.label}</span>
-                </button>
-            `).join('');
-            
-            desktop.innerHTML = html;
-            mobile.innerHTML = html;
+            container.innerHTML = views[viewId] ? views[viewId]() : `<div class="p-20 text-center">Development in Progress</div>`;
             lucide.createIcons();
         }
 
-        function showView(v) {
-            document.getElementById('view-auth').classList.toggle('hidden', v !== 'auth');
-            document.getElementById('view-app').classList.toggle('hidden', v !== 'app');
-            if (v === 'app') renderNavigation();
+        // --- HANDLERS & MODALS ---
+        function handleBooking(e) {
+            e.preventDefault();
+            const newAppt = {
+                id: 'INV-' + Math.floor(1000 + Math.random() * 9000),
+                patientId: currentUser.id,
+                patientName: currentUser.name,
+                patientPhone: currentUser.phone,
+                service: document.getElementById('book-service').value,
+                date: document.getElementById('book-date').value,
+                time: document.getElementById('book-time').value,
+                status: 'pending',
+                amount: '1,200',
+                createdAt: new Date().toISOString()
+            };
+
+            const appts = DB.get('appointments');
+            appts.push(newAppt);
+            DB.set('appointments', appts);
+
+            viewInvoice(newAppt.id);
+            showToast("Appointment Requested!");
         }
 
-        function hideLoader() {
-            document.getElementById('loader').style.display = 'none';
+        function viewInvoice(id) {
+            const a = DB.get('appointments').find(x => x.id === id);
+            const msg = `*INVOICE: FUNCTIONAL REHAB LAB*%0A*ID:* ${a.id}%0A*Patient:* ${a.patientName}%0A*Session:* ${a.service}%0A*Date:* ${a.date} at ${a.time}%0A*Total:* ₹${a.amount}%0A_Status: ${a.status.toUpperCase()}_`;
+            
+            const html = `
+                <div class="print-area">
+                    <div class="flex justify-between items-start mb-10">
+                        <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-16 h-16 rounded-xl">
+                        <div class="text-right">
+                            <h3 class="text-xl font-black text-orange">INVOICE</h3>
+                            <p class="text-xs text-gray-500">#${a.id}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-8 mb-10 border-y border-[#242424] py-8">
+                        <div>
+                            <p class="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2">Patient</p>
+                            <p class="font-bold">${a.patientName}</p>
+                            <p class="text-sm text-gray-400">${a.patientPhone}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2">Centre</p>
+                            <p class="font-bold text-sm">Functional Rehab Lab</p>
+                            <p class="text-[10px] text-gray-500">+91 80885 96486</p>
+                        </div>
+                    </div>
+                    <div class="space-y-4 mb-10">
+                        <div class="flex justify-between p-4 bg-white/5 rounded-xl">
+                            <span class="text-sm">${a.service}</span>
+                            <span class="font-bold text-sm">₹${a.amount}</span>
+                        </div>
+                    </div>
+                    <div class="flex gap-4 no-print">
+                        <button onclick="window.print()" class="flex-1 py-4 bg-white text-black font-black text-xs uppercase tracking-widest rounded-xl">Download PDF</button>
+                        <a href="https://wa.me/${CLINIC_WHATSAPP}?text=${msg}" target="_blank" class="flex-1 py-4 bg-[#25D366] text-white font-black text-xs uppercase tracking-widest rounded-xl text-center">WhatsApp Now</a>
+                    </div>
+                </div>
+            `;
+            openModal(html);
         }
 
-        function setBtnLoading(isLoading) {
-            const btn = document.querySelector('#auth-form button');
-            btn.disabled = isLoading;
-            btn.innerText = isLoading ? 'AUTHENTICATING...' : 'CONTINUE';
+        function showPrescriptionForm(pid, pname) {
+            const html = `
+                <h3 class="text-2xl font-bold mb-6">New Medical Plan: <span class="text-orange">${pname}</span></h3>
+                <form onsubmit="handlePrescriptionSubmit(event, '${pid}', '${pname}')" class="space-y-6">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Clinical Diagnosis</label>
+                        <input id="p-diagnosis" required class="w-full p-4" placeholder="e.g. Lumbar Disc Bulge with Sciatica">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Treatment Strategy & Exercises</label>
+                        <textarea id="p-exercises" rows="5" required class="w-full p-4" placeholder="1. Neural Flossing... 2. Cat-Camel..."></textarea>
+                    </div>
+                    <button type="submit" class="w-full btn-primary py-4 rounded-xl">Save & Issue Prescription</button>
+                </form>
+            `;
+            openModal(html);
         }
 
+        function handlePrescriptionSubmit(e, pid, pname) {
+            e.preventDefault();
+            const newP = {
+                id: 'RX-' + Date.now(),
+                patientId: pid,
+                patientName: pname,
+                diagnosis: document.getElementById('p-diagnosis').value,
+                exercises: document.getElementById('p-exercises').value,
+                date: new Date().toLocaleDateString(),
+                createdAt: new Date().toISOString()
+            };
+
+            const all = DB.get('prescriptions');
+            all.push(newP);
+            DB.set('prescriptions', all);
+            
+            closeModal();
+            showToast("Prescription issued to " + pname);
+            navigate('admin_presc');
+        }
+
+        function viewPrescription(id) {
+            const p = DB.get('prescriptions').find(x => x.id === id);
+            const html = `
+                <div class="text-center mb-8">
+                    <img src="https://plain-apac-prod-public.komododecks.com/202609/17/Kw2mXJAzBAz9GQSJUTXp/image.jpg" class="w-12 h-12 mx-auto rounded-lg mb-4">
+                    <h2 class="text-lg font-black tracking-widest">FUNCTIONAL REHAB LAB</h2>
+                    <p class="text-[10px] text-gray-500 uppercase">Advanced Physiotherapy Prescription</p>
+                </div>
+                <div class="border-t border-[#242424] pt-6 mb-8">
+                    <p class="text-[10px] font-bold text-orange uppercase tracking-widest mb-1">Patient Name</p>
+                    <p class="text-xl font-bold mb-4">${p.patientName}</p>
+                    <p class="text-[10px] font-bold text-orange uppercase tracking-widest mb-1">Clinical Diagnosis</p>
+                    <p class="text-lg font-medium mb-6">${p.diagnosis}</p>
+                    <p class="text-[10px] font-bold text-orange uppercase tracking-widest mb-1">Prescribed Exercises</p>
+                    <div class="bg-white/5 p-6 rounded-2xl text-sm leading-relaxed">${p.exercises.replace(/\n/g, '<br>')}</div>
+                </div>
+                <div class="flex justify-between items-end mt-12">
+                    <div>
+                        <p class="text-[10px] text-gray-500 uppercase">Date Issued</p>
+                        <p class="font-bold">${p.date}</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[10px] text-gray-500 uppercase">Physiotherapist</p>
+                        <p class="font-bold">Dr. Anand G.R.</p>
+                    </div>
+                </div>
+            `;
+            openModal(html);
+        }
+
+        function updateApptStatus(id, newStatus) {
+            const appts = DB.get('appointments');
+            const idx = appts.findIndex(a => a.id === id);
+            if (idx > -1) {
+                appts[idx].status = newStatus;
+                DB.set('appointments', appts);
+                showToast("Status updated to " + newStatus);
+            }
+        }
+
+        // --- HELPERS ---
         function openModal(html) {
             document.getElementById('modal-body').innerHTML = html;
             document.getElementById('modal-overlay').classList.remove('hidden');
@@ -654,20 +825,19 @@
             lucide.createIcons();
         }
 
-        window.closeModal = () => document.getElementById('modal-overlay').classList.add('hidden');
-
-        function showToast(msg, type = "success") {
-            const wrap = document.getElementById('toast-wrap');
-            const t = document.createElement('div');
-            t.className = `p-4 px-6 rounded-full bg-[#111] border border-white/5 shadow-2xl flex items-center gap-3 text-xs font-bold uppercase tracking-widest mt-4 animate-fade ${type === 'error' ? 'text-red-500' : 'text-[#FF5A00]'}`;
-            t.innerHTML = `<i data-lucide="${type === 'error' ? 'alert-circle' : 'check-circle'}" class="w-4 h-4"></i> ${msg}`;
-            wrap.appendChild(t);
-            lucide.createIcons();
-            setTimeout(() => t.remove(), 4000);
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
         }
 
-        document.getElementById('auth-form').onsubmit = handleAuth;
-
+        function showToast(msg, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `p-4 mb-4 rounded-2xl glass flex items-center gap-3 animate-bounce shadow-2xl ${type === 'error' ? 'border-red-500 text-red-500' : 'border-orange text-white'}`;
+            toast.innerHTML = `<i data-lucide="${type === 'error' ? 'alert-circle' : 'check'}" class="w-5 h-5"></i> <span class="text-sm font-bold">${msg}</span>`;
+            container.appendChild(toast);
+            lucide.createIcons();
+            setTimeout(() => toast.remove(), 4000);
+        }
     </script>
 </body>
 </html>
